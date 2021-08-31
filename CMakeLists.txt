@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.0.0)
+project(MSP430-Emulator VERSION 0.1.0)
+
+include(CTest)
+enable_testing()
+
+
+add_library(Hardware hardware/port.cpp hardware/microcontroller.cpp)
+add_library(Interpreter interpreter/interpreter.cpp)
+
+
+add_executable(MSP430-Emulator main.cpp)
+target_link_libraries(MSP430-Emulator Hardware Interpreter)
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
