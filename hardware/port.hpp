@@ -7,11 +7,15 @@
 class Port
 {
 public:
+    Port(std::string name = "")
+    {
+        this->name_ = name;
+    }
     std::string json() const;
 
 private:
-    friend std::ostream& operator<<(std::ostream& stream, const Port &port);
-    
+    friend std::ostream &operator<<(std::ostream &stream, const Port &port);
+
     // Getter/Setter
 public:
     uint8_t in() const;
@@ -42,7 +46,7 @@ public:
     void setIfg(const uint8_t &ifg);
 
 private:
-    uint8_t in_; // Input
+    uint8_t in_;  // Input
     uint8_t out_; // Output
     uint8_t dir_; // Direction
     uint8_t ren_; // Resistor Enable
@@ -51,4 +55,6 @@ private:
     uint8_t ies_; // Interrupt Edge Select
     uint8_t ie_;  // Interrupt Enable
     uint8_t ifg_; // Interrupt Flag
+
+    std::string name_;
 };

@@ -2,6 +2,7 @@
 
 std::ostream &operator<<(std::ostream &stream, const Port &port)
 {
+    stream << port.name_;
     stream << "{";
     stream << "\"IN\":0b" << std::bitset<8>(port.in_);
     stream << ", \"OUT\":0b" << std::bitset<8>(port.out_);
@@ -30,6 +31,7 @@ std::string Port::json() const
     ss << ",\"IES\":" << static_cast<int>(this->ies_);
     ss << ",\"IE\":" << static_cast<int>(this->ie_);
     ss << ",\"IFG\":" << static_cast<int>(this->ifg_);
+    ss << ",\"name\":" << this->name_;
     ss << "}";
     return ss.str();
 }

@@ -22,3 +22,14 @@ std::string Microcontroller::json() const
     ss << "}";
     return ss.str();
 }
+
+std::string MSP430F5529::json() const
+{
+    std::stringstream ss;
+    ss << "{";
+    "\"ports\":[";
+    ss << PA_L.json() << ",";
+    ss << "]";
+    ss << "}";
+    return ss.str();
+}
