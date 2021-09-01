@@ -1,1 +1,7 @@
-test
+main:
+MOV.W     #23168,&WDTCTL+0      ; [] |9|
+MOV.B     #1,&PADIR_L+0         ; [] |10|
+$C$L1:
+OR.B     #1,&PAOUT_L+0         ; [] |13|
+JMP       $C$L1                 ; [] |11|
+NOP       ; []
