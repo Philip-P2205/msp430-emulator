@@ -4,17 +4,16 @@ constexpr size_t hash(const char *s, int off = 0)
 {
     return !s[off] ? 5381 : (hash(s, off + 1) * 33) ^ s[off];
 }
-/**
- * @brief Trims away whitespace at both ends of the string
- * 
- * @param str 
- * @return std::string 
- */
 inline std::string trim(std::string str)
 {
-    str.erase(0, str.find_first_not_of(" \t\n"));
-    str.erase(str.find_last_not_of(" \t\n") + 1);
+    str.erase(0, str.find_first_not_of(" \t\n\r"));
+    str.erase(str.find_last_not_of(" \t\n\r") + 1);
     return str;
+}
+
+MSP430F5529::operator const char *() const
+{
+    return "Test";
 }
 
 void MSP430F5529::interpret(std::istream &src)
@@ -22,9 +21,21 @@ void MSP430F5529::interpret(std::istream &src)
     std::string line;
     while (std::getline(src, line))
     {
+        line = trim(line);
         // TODO: error prevention, removal of unused code
         if (line.empty())
             continue;
+        if (line.at(0) == '.')
+            continue;
+        if (line.at(0) == ';')
+            continue;
+
+        if (line.find("$C$DW$") == 0)
+            continue;
+
+        if (line.back() == ':')
+            continue;
+
         interpretStatement(line);
     }
 }
@@ -37,8 +48,8 @@ void MSP430F5529::interpretStatement(std::string statement)
     std::string arguments = trim(statement.substr(pos, statement.length()));
     std::string args[2];
 
-    if (pos = arguments.find_first_of(','))
-    {
+    if ((pos = arguments.find_first_of(',')) != std::string::npos)
+    { // constains 2 arguments
         args[0] = arguments.substr(0, pos);
         if (args[0].at(0) == '#')
             args[0].erase(0, 1);
@@ -49,16 +60,10 @@ void MSP430F5529::interpretStatement(std::string statement)
             args[1].erase(pos, args[1].length());
     }
     else
-    {
+    { // constains only one argument
         args[0] = arguments;
-        args[1] = nullptr;
+        // args[1] = std::string();
     }
-    std::cout << statement << std::endl;
-    std::cout << "CMD : " << cmd << std::endl;
-    std::cout << "ARG1: " << args[0] << std::endl;
-    std::cout << "ARG2: " << args[1] << std::endl
-              << std::endl;
-
     run(cmd.c_str(), args);
 }
 
@@ -76,6 +81,9 @@ void MSP430F5529::run(const char *cmd, std::string args[2])
     case hash("OR.B"):
         reg = getRegister(args[1].c_str());
         reg->data |= stoi(args[0]);
+        break;
+
+    case hash("NOP"):
         break;
 
     default:
@@ -214,7 +222,7 @@ Register *MSP430F5529::getRegister(const char *reg)
         return &PDDS_H;
     case hash("PDSEL_H"):
         return &PDSEL_H;
-    
+
     default:
         return nullptr;
     }

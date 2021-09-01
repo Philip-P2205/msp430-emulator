@@ -2,64 +2,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-
-struct Register
-{
-    Register(const uint8_t regSize = 8)
-    {
-        registerSize = regSize;
-    }
-    uint16_t data = 0;
-
-private:
-    uint8_t registerSize;
-
-public:
-    operator uint16_t() const { return data; }
-    Register &operator=(uint16_t d)
-    {
-        data = d;
-        return *this;
-    }
-    Register &operator|=(uint16_t d)
-    {
-        data |= d;
-        return *this;
-    }
-    Register &operator&=(uint16_t d)
-    {
-        data &= d;
-        return *this;
-    }
-    Register &operator^=(uint16_t d)
-    {
-        data ^= d;
-        return *this;
-    }
-    Register &operator<<=(uint16_t d)
-    {
-        data <<= d;
-        return *this;
-    }
-    Register &operator>>=(uint16_t d)
-    {
-        data >>= d;
-        return *this;
-    }
-
-    uint16_t operator|(uint16_t d) { return data | d; }
-    uint16_t operator&(uint16_t d) { return data & d; }
-    uint16_t operator^(uint16_t d) { return data ^ d; }
-    uint16_t operator<<(uint16_t d) { return data << d; }
-    uint16_t operator>>(uint16_t d) { return data >> d; }
-
-    bool operator[](uint8_t pos)
-    {
-        if (pos >= registerSize)
-            throw "Index out of bounds!";
-        return (data & (1 << pos)) != 0;
-    }
-};
+#include <ostream>
+#include <map>
+#include "register.hpp"
 
 class MSP430F5529
 {
@@ -69,7 +14,28 @@ public:
     void run(const char *cmd, std::string args[2]);
     Register *getRegister(const char *reg);
 
-private:
+    operator const char *() const;
+
+    /* ******************************** Registers ********************************/
+    /* Note: write access is restricted in the Register class */
+public:
+    Register R0, &PC = R0;            /* Program Counter */
+    Register R1, &SP = R1;            /* Stack Pointer */
+    Register R2, &SR = R2, &CG1 = R2; /* Status Register */
+    Register R3, &CG2 = R3;           /* Constant Generator */
+    Register R4;                      /* General Purpose Register */
+    Register R5;                      /* General Purpose Register */
+    Register R6;                      /* General Purpose Register */
+    Register R7;                      /* General Purpose Register */
+    Register R8;                      /* General Purpose Register */
+    Register R9;                      /* General Purpose Register */
+    Register R10;                     /* General Purpose Register */
+    Register R11;                     /* General Purpose Register */
+    Register R12;                     /* General Purpose Register */
+    Register R13;                     /* General Purpose Register */
+    Register R14;                     /* General Purpose Register */
+    Register R15;                     /* General Purpose Register */
+
     // TODO: Expand System registers
     Register WDTCTL{16}; /* Watchdog Timer Control */
 
